@@ -25,17 +25,17 @@ def blast_ic_2d(x, y, p_high=4.0, p_low=0.1, r0=0.2, center_x=0.5, center_y=0.5)
 
 def run_tube_reflecting(tEnd=0.3, nx=100, ny=100, plot=True):
     """Run 2D blast wave in a tube with reflecting walls.
-    
+
     Left wall is reflecting, right wall is transmissive,
     top and bottom walls are reflecting.
-    
+
     Args:
         tEnd: Final simulation time
         nx, ny: Grid resolution
         plot: Whether to show live visualization
     """
     start = time.time()
-    
+
     # Domain and grid parameters
     Lx, Ly = 1.0, 1.0
     dx, dy = Lx / nx, Ly / ny
@@ -57,7 +57,7 @@ def run_tube_reflecting(tEnd=0.3, nx=100, ny=100, plot=True):
     nxg, nyg = nx + 2, ny + 2
     grid = CFDGrid(Lx, Ly, nxg, nyg)
     grid.q[1:-1, 1:-1, :] = Q0
-    
+
     # Initial boundary conditions
     grid.apply_reflecting_bc(side='left', ng=1)
     grid.q[:, -1, :] = grid.q[:, -2, :]  # Right transmissive
@@ -74,7 +74,7 @@ def run_tube_reflecting(tEnd=0.3, nx=100, ny=100, plot=True):
     if plot:
         plt.ion()
         fig, ax = plt.subplots(figsize=(6, 5))
-        im = ax.imshow(p0, origin='lower', extent=[0, Lx, 0, Ly], 
+        im = ax.imshow(p0, origin='lower', extent=[0, Lx, 0, Ly],
                       cmap='plasma', vmin=0, vmax=1.0)
         plt.colorbar(im, ax=ax, label='Pressure')
         ax.set_title('2D Blast in Tube (Reflecting Walls)')
@@ -88,30 +88,30 @@ def run_tube_reflecting(tEnd=0.3, nx=100, ny=100, plot=True):
     t = 0.0
     it = 0
     q = grid.q
-    
+
     while t < tEnd:
         # RK2 stage 1
         res = grid.muscl_euler_res2d_v1(limiter='MC', fluxMethod='HLLE1d')
         qs = q - dt * res
-        
+
         # Apply boundary conditions to stage 1
         grid.q = qs.copy()
         grid.apply_reflecting_bc(side='left', ng=1)
         grid.q[:, -1, :] = grid.q[:, -2, :]  # Right transmissive
         grid.apply_reflecting_bc(side='bottom', ng=1)
         grid.apply_reflecting_bc(side='top', ng=1)
-        
+
         # RK2 stage 2
         res2 = grid.muscl_euler_res2d_v1(limiter='MC', fluxMethod='HLLE1d')
         q_new = 0.5 * (q + grid.q - dt * res2)
-        
+
         # Apply boundary conditions to final state
         grid.q = q_new.copy()
         grid.apply_reflecting_bc(side='left', ng=1)
         grid.q[:, -1, :] = grid.q[:, -2, :]  # Right transmissive
         grid.apply_reflecting_bc(side='bottom', ng=1)
         grid.apply_reflecting_bc(side='top', ng=1)
-        
+
         q = grid.q
 
         # Extract primitive variables
@@ -126,7 +126,7 @@ def run_tube_reflecting(tEnd=0.3, nx=100, ny=100, plot=True):
             im.set_data(p)
             ax.set_title(f'2D Blast in Tube (t={t:.3f})')
             plt.pause(0.001)
-        
+
         t += dt
         it += 1
 

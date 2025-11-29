@@ -3,7 +3,7 @@ requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "approximate_riemann_solvers_py"
+name = "pyrodeen"
 version = "0.1.0"
 description = "A python port of a collection of Riemann solver implementations"
 authors = [{name="Genis Bonet Garcia", email="gbonetgarcia@gmail.com"}]
@@ -17,3 +17,7 @@ dependencies = [
 muscl-euler1d = "rde_solver.cfd.MUSCL_Euler1d:main"
 muscl-euler2d = "rde_solver.cfd.MUSCL_Euler2d:main"
 muscl-euler-sod2d = "rde_solver.cfd.MUSCL_Euler_sod2d:main"
+
+pyrodeen-1d = "rde_solver.cfd.MUSCL_Euler1d:main"
+pyrodeen-2d = "rde_solver.cfd.MUSCL_Euler2d:main"
+pyrodeen-sod = "rde_solver.cfd.MUSCL_Euler_sod2d:main"

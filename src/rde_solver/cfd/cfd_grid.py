@@ -1,10 +1,9 @@
 import numpy as np
+import cantera as ct
 import time
 import matplotlib.pyplot as plt
-import cantera as ct
-import copy
-from .utils import minmod, vanalbada, vanLeer, HLLE1Dflux, HLLE1Dflux_vec
-from MUSCL_TVD_FagioDiFapo.euler_solvers import EulerExact
+from .legacy_2d.utils import minmod, vanalbada, vanLeer, HLLE1Dflux, HLLE1Dflux_vec
+from .legacy_1d.euler_solvers import EulerExact
 
 class CFDGrid:
     def __init__(self, Lx, Ly, nx, ny, species=None):
